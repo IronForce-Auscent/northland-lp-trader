@@ -1,1 +1,10 @@
 <a href="{% url 'lp_trader:login' %}">login</a>
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <div> {{ message }}</div>
+    {% endfor %}
+</ul>
+{% endif %}

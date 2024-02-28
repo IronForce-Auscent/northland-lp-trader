@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from celery.schedules import crontab
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,3 +130,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ESI_SSO_CLIENT_ID = 'ee5b10259f3a4e7486083812d845af11'
 ESI_SSO_CLIENT_SECRET = '0wQm4AktZV20BbHQXS4WFw8Wqh909mbmdEezLM6x'
 ESI_SSO_CALLBACK_URL = 'http://127.0.0.1:8000/sso/callback'
+
+CELERYBEAT_SCHEDULE = {
+    'esi_cleanup_callbackredirect': {
+        'task': 'esi.tasks.cleanup_callbackredirect',
+        'schedule': crontab(minute='5')
+    },
+    'esi_cleanup_token': {
+        'task': 'esi.tasks.cleanup_token',
+        'schedule': crontab(hour='23', minute='59')
+    }
+}

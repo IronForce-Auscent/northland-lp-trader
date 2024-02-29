@@ -3,11 +3,6 @@
 <a href="{% url 'lp_trader:update_corp_wallet' %}">Update Corp Wallet</a>
 <a href="{% url 'lp_trader:force_update_warning' %}">Force DB Update</a>
 
-
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <div> {{ message }}</div>
-    {% endfor %}
-</ul>
-{% endif %}
+<h1>Forcing an update on all characters will take a long time. Are you sure you want to force an update?</h1>
+<a href="{% url 'lp_trader:force_update' %}">Yes</a>
+<a href="{% url 'lp_trader:index' %}">No</a>

@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qg#ut0*_@3o85(d7)#5m__895!^u7u0!*q=4hxp3d!-km6sds6'
+SECRET_KEY = 'django-insecure-no-lmao-this-isnt-a-real-key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,9 +127,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Project custom settings
-ESI_SSO_CLIENT_ID = 'ee5b10259f3a4e7486083812d845af11'
-ESI_SSO_CLIENT_SECRET = '0wQm4AktZV20BbHQXS4WFw8Wqh909mbmdEezLM6x'
-ESI_SSO_CALLBACK_URL = 'http://127.0.0.1:8000/sso/callback'
+ESI_SSO_CLIENT_ID = 'YOUR_CLIENT_ID'
+ESI_SSO_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+ESI_SSO_CALLBACK_URL = 'YOUR_CALLBACK_URL'
+ESI_SCOPES = ['publicData', 'esi-wallet.read_character_wallet.v1', 'esi-wallet.read_corporation_wallet.v1', 'esi-markets.structure_markets.v1', 'esi-corporations.read_structures.v1', 'esi-characters.read_loyalty.v1', 'esi-characters.read_opportunities.v1', 'esi-characters.read_chat_channels.v1', 'esi-characters.read_medals.v1', 'esi-characters.read_standings.v1', 'esi-characters.read_agents_research.v1', 'esi-industry.read_character_jobs.v1', 'esi-markets.read_character_orders.v1', 'esi-characters.read_blueprints.v1', 'esi-characters.read_corporation_roles.v1', 'esi-location.read_online.v1', 'esi-contracts.read_character_contracts.v1', 'esi-clones.read_implants.v1', 'esi-characters.read_fatigue.v1', 'esi-killmails.read_corporation_killmails.v1', 'esi-corporations.track_members.v1', 'esi-wallet.read_corporation_wallets.v1', 'esi-characters.read_notifications.v1', 'esi-corporations.read_divisions.v1', 'esi-corporations.read_contacts.v1', 'esi-assets.read_corporation_assets.v1', 'esi-corporations.read_titles.v1', 'esi-corporations.read_blueprints.v1', 'esi-bookmarks.read_corporation_bookmarks.v1', 'esi-contracts.read_corporation_contracts.v1', 'esi-corporations.read_standings.v1', 'esi-corporations.read_starbases.v1', 'esi-industry.read_corporation_jobs.v1', 'esi-markets.read_corporation_orders.v1', 'esi-corporations.read_container_logs.v1', 'esi-industry.read_character_mining.v1', 'esi-industry.read_corporation_mining.v1', 'esi-planets.read_customs_offices.v1', 'esi-corporations.read_facilities.v1', 'esi-corporations.read_medals.v1', 'esi-characters.read_titles.v1', 'esi-alliances.read_contacts.v1', 'esi-characters.read_fw_stats.v1', 'esi-corporations.read_fw_stats.v1', 'esi-characterstats.read.v1']
+
 
 CELERYBEAT_SCHEDULE = {
     'esi_cleanup_callbackredirect': {

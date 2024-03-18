@@ -2,11 +2,9 @@ from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 from esi.models import Token
 
-from .models import CharacterWallet, LoyaltyStore
+from .models import *
 
 # Register your models here.
-try:
-    admin.site.register(CharacterWallet)
-    admin.site.register(LoyaltyStore)
-except AlreadyRegistered as e:
-    print("Model already registered, skipping")
+admin.site.register(Character)
+admin.site.register(Corp)
+admin.site.register(Item)

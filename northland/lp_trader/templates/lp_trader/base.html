@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'lp_trader/style.css' %}">
+</head>
+<body>
+
+<div class="navbar">
+    <a href="{% url 'lp_trader:login' %}">Login</a>
+    <div class="dropdown">
+        <a href="#" class="dropbtn">View</a>
+        <div class="dropdown-content">
+            <a href="{% url 'lp_trader:view_loyalty' %}">View LP Quantities</a>
+            <a href="{% url 'lp_trader:view_corp_wallet' %}">View Corp Wallet</a> 
+        </div>
+    </div>
+    <div class="dropdown">
+        <a href="#" class="dropbtn">Update</a>
+        <div class="dropdown-content">
+            <a href="{% url 'lp_trader:update_char' %}">Update Character DB</a>
+            <a href="{% url 'lp_trader:update_item' %}">Update Item DB</a> 
+        </div>
+    </div>
+</div>
+
+{% block content %}{% endblock content%}
+
+</body>
+</html>

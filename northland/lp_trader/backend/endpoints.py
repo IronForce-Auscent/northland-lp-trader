@@ -1,5 +1,10 @@
+from django.conf import settings
 from esi.clients import EsiClientProvider
 from esi.models import Token
+from typing import *
+
+import pandas as pd
+import requests
 
 esi = EsiClientProvider(app_info_text="lp-trader v0.0")
 
@@ -86,13 +91,14 @@ def get_corporation_divisions(token: Token, corp_id: int = 98750824) -> list[dic
         corp_id (int): The corporation ID to pull data for (default is 98750824)
 
     Returns:
-        A dictionary of wallet and hangar division names
+        A tuple containing key-value pairs of the hangar and wallet divisions
     """
     op = esi.client.Corporation.get_corporations_corporation_id_divisions(
         corporation_id = corp_id,
         token = token.valid_access_token()
     ).results()
-    return op
+    hangar, wallet = op["hangar"], op["wallet"]
+    return hangar, wallet
 
 def get_corporation_wallet_balance(token: Token, corp_id: int = 98750824) -> dict:
     """
@@ -112,7 +118,7 @@ def get_corporation_wallet_balance(token: Token, corp_id: int = 98750824) -> dic
     return op
 
 
-def get_loyalty_store_offers(corp_id: int):
+def get_loyalty_store_offers(corp_id: int) -> dict:
     """
     Returns the offers available in a corporation's LP store (NPC corp only)
 
@@ -120,14 +126,14 @@ def get_loyalty_store_offers(corp_id: int):
         corp_id (int): The (NPC) corporation to search
     
     Returns:
-
+        dict
     """
     op = esi.client.Loyalty.get_loyalty_stores_corporation_id_offers(
         corporation_id = corp_id
     ).results()
     return op
 
-def get_character_wallet_balance(token: Token, char_id: int):
+def get_character_wallet_balance(token: Token, char_id: int) -> dict:
     """
     Returns the wallet balance of a character
 
@@ -136,10 +142,70 @@ def get_character_wallet_balance(token: Token, char_id: int):
         char_id (int): The character to pull wallet data for
     
     Returns:
-
+        dict
     """
     op = esi.client.Wallet.get_characters_character_id_wallet(
         character_id = char_id,
         token = token.valid_access_token()
     ).results()
     return op
+
+
+def get_static_data() -> list[dict]:
+    """
+    Returns the latest static data from Fuzzworks
+
+    Args:
+        None
+    
+    Returns:
+        A list object
+    """
+    data = pd.read_csv("https://www.fuzzwork.co.uk/dump/latest/invTypes.csv")
+    data.dropna(subset=["marketGroupID"], inplace=True)
+    #data = data[data["typeName"].str.contains("SKIN") == False]
+    to_exclude = ["description","mass","volume","capacity","portionSize","raceID","basePrice","published","marketGroupID","iconID","soundID","graphicID"]
+    data.drop(labels=to_exclude, inplace=True, axis=1)
+    return data.to_dict(orient="records")
+
+
+def get_item_prices(typeIds: list[int] = [44992], regionId: int = 30000142) -> Tuple[int, list]:
+    """
+    Returns the latest price data for an item from Janice appraisal API. Searches
+    for price data in Jita 4-4
+
+    Args:
+        typeNames (list): A list of item names to look up prices for. Defaults to ["PLEX"]
+
+    Returns:
+        A tuple object containing a status code and JSON response
+
+        Sample JSON response:
+        {
+            '44992': {
+                'buy': 4883000.0,
+                'split': 4961000.0,
+                'sell': 5039000.0
+            },
+            ...
+        }
+    """
+    typeIds_parsed = typeIds if len(typeIds) == 1 else ",".join(list(map(str, typeIds)))
+    target = "https://market.fuzzwork.co.uk/aggregates/"
+    params = {
+        'region': regionId,
+        'types': typeIds_parsed
+    }
+    req = requests.get(target, params=params)
+    statcode, body = req.status_code, req.json()
+    res = {}
+    for key, value in body.items():
+        buy, sell = float(value["buy"]["max"]), float(value["sell"]["min"])
+        split = (buy + sell) / 2
+        new_item = {
+            "buy": buy,
+            "split": split,
+            "sell": sell
+        }
+        res[key] = new_item
+    return statcode, res

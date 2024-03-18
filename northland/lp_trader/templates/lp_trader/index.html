@@ -1,8 +1,6 @@
-<a href="{% url 'lp_trader:login' %}">Login</a>
-<a href="{% url 'lp_trader:update_loyalty' %}">Update LP Quantities</a>
-<a href="{% url 'lp_trader:update_corp_wallet' %}">Update Corp Wallet</a>
-<a href="{% url 'lp_trader:force_update_warning' %}">Force DB Update</a>
+{% extends 'lp_trader/base.html' %}
 
+{% block content %}
 
 {% if messages %}
 <ul class="messages">
@@ -11,3 +9,4 @@
     {% endfor %}
 </ul>
 {% endif %}
+{% endblock content %}

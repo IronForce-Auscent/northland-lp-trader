@@ -143,9 +143,10 @@ def get_loyalty_store_offers(corp_id: int) -> dict:
                         },
                         ...
                     ], 
-                "received_items": {
-                    "type_id": 28803, 
-                    "quantity": 1
+                "received_items": 
+                    {
+                        "quantity": 1,
+                        "type_id": 28803
                     }
                 },
                 ...
@@ -161,8 +162,8 @@ def get_loyalty_store_offers(corp_id: int) -> dict:
             "lp_cost": offer["lp_cost"],
             "required_items": offer["required_items"],
             "received_items": {
-                "type_id": offer["type_id"],
-                "quantity": offer["quantity"]
+                "quantity": offer["quantity"],
+                "type_id": offer["type_id"]
             }
         }
     return res

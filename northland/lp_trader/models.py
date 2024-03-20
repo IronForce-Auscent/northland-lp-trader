@@ -13,6 +13,7 @@ class Corp(models.Model):
     corp_id = models.IntegerField()
 
     is_npc_corp = models.BooleanField(default=True)
+    lp_exchange_rate = models.FloatField(default=0.8) # Determines how much corp LP can be obtained by exchanging x amount of CONCORD LP, requires manual input
     offers = models.JSONField()
 
     def __str__(self):

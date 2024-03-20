@@ -28,6 +28,12 @@ def update_char(request):
         data.update_character_db(token, force=True)
     return HttpResponseRedirect(reverse("lp_trader:index"))
 
+def update_corp(request):
+    corps = Corp.objects.all()
+    for corp in corps:
+        data.update_corp_loyalty_store(corp_id=corp.corp_id)
+    return HttpResponseRedirect(reverse("lp_trader:index"))
+
 def update_item(request):
     data.update_sde()
     return HttpResponseRedirect(reverse("lp_trader:index"))

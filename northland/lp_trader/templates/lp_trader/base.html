@@ -21,9 +21,11 @@
         <a href="#" class="dropbtn">Update</a>
         <div class="dropdown-content">
             <a href="{% url 'lp_trader:update_char' %}">Update Character DB</a>
+            <a href="{% url 'lp_trader:update_corp' %}">Update Corp DB</a>
             <a href="{% url 'lp_trader:update_item' %}">Update Item DB</a> 
         </div>
     </div>
+    <a href="{% url 'admin:index' %}">Admin</a>
 </div>
 
 {% block content %}{% endblock content%}

@@ -92,6 +92,8 @@ def get_corporation_divisions(token: Token, corp_id: int = 98750824) -> list[dic
 
     Returns:
         A tuple containing key-value pairs of the hangar and wallet divisions
+
+
     """
     op = esi.client.Corporation.get_corporations_corporation_id_divisions(
         corporation_id = corp_id,
@@ -127,11 +129,43 @@ def get_loyalty_store_offers(corp_id: int) -> dict:
     
     Returns:
         dict
+
+        Sample dict response:
+        {
+            "4767": {
+                "isk_cost": 25200000, 
+                "lp_cost": 37800, 
+                "required_items": 
+                    [
+                        {
+                        "quantity": 1, 
+                        "type_id": 14297
+                        },
+                        ...
+                    ], 
+                "received_items": {
+                    "type_id": 28803, 
+                    "quantity": 1
+                    }
+                },
+                ...
+        }
     """
     op = esi.client.Loyalty.get_loyalty_stores_corporation_id_offers(
         corporation_id = corp_id
     ).results()
-    return op
+    res = {}
+    for offer in op:
+        res[offer["offer_id"]] = {
+            "isk_cost": offer["isk_cost"],
+            "lp_cost": offer["lp_cost"],
+            "required_items": offer["required_items"],
+            "received_items": {
+                "type_id": offer["type_id"],
+                "quantity": offer["quantity"]
+            }
+        }
+    return res
 
 def get_character_wallet_balance(token: Token, char_id: int) -> dict:
     """

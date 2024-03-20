@@ -27,7 +27,7 @@ def check_for_character_update():
     chars = Character.objects.all()
     for char in chars:
         if not char.was_recently_updated():
-            token = Token.objects.filter(character_id=char.char_id)
+            token = Token.objects.filter(character_id=char.char_id)[0]
             _ = update_character_db(token)
     return False
 
@@ -66,7 +66,7 @@ def update_character_db(token: Token, force: bool = False) -> bool:
         print(f"New character ({token.character_name}) created!")
     except Exception as e:
         print(f"Exception: {e}")
-        return False
+        raise e
     return True
 
 def update_corp_loyalty_store(corp_id: int) -> bool:
@@ -151,7 +151,7 @@ def update_sde_prices() -> bool:
     request_inputs = []
     items = Item.objects.all()
     queryset_len = len(items)
-    request_inputs = np.array_split(items, math.ceil(queryset_len / 2500))
+    request_inputs = np.array_split(items, math.ceil(queryset_len / 1000))
     for item_list in request_inputs:
         item_inputs = [n.item_id for n in item_list]
         print("Querying for data... ")
@@ -159,4 +159,10 @@ def update_sde_prices() -> bool:
         _, res = get_item_prices(item_inputs)
         end = time.time()
         print(f"Data queried successfully! (runtime: {end - start})")
+
+        for key, value in res.items():
+            item = Item.objects.filter(item_id=key)[0]
+            item.market_price = value
+            item.save()
+
     return res

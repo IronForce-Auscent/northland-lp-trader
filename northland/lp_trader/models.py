@@ -77,3 +77,18 @@ class Item(models.Model):
     
     def __str__(self):
         return self.item_name
+    
+class Blueprint(models.Model):
+    """
+    Django model for Blueprint object
+    """
+    item_name = models.CharField(max_length=300)
+    item_id = models.IntegerField()
+
+    baseME = models.IntegerField(default=0)
+    baseTE = models.IntegerField(default=0)
+
+    input_materials = models.JSONField()
+
+    def __str__(self):
+        return self.item_name

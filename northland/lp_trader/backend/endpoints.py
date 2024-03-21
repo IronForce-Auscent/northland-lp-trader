@@ -197,11 +197,54 @@ def get_static_data() -> list[dict]:
         A list object
     """
     data = pd.read_csv("https://www.fuzzwork.co.uk/dump/latest/invTypes.csv")
-    data.dropna(subset=["marketGroupID"], inplace=True)
+    data.drop(data[data["published"] == False].index, inplace=True)
     #data = data[data["typeName"].str.contains("SKIN") == False]
     to_exclude = ["description","mass","volume","capacity","portionSize","raceID","basePrice","published","marketGroupID","iconID","soundID","graphicID"]
     data.drop(labels=to_exclude, inplace=True, axis=1)
     return data.to_dict(orient="records")
+
+def get_blueprint_static_data() -> list[dict]:
+    """
+    Returns the latest blueprint data from Fuzzworks
+
+    Args:
+        None
+
+    Returns:
+        A list object
+    """
+    data = pd.read_csv("https://www.fuzzwork.co.uk/dump/latest/industryActivityMaterials.csv")
+    data.drop(data[data["activityID"] != 1].index, inplace=True)
+    return data.to_dict(orient="records")
+
+def get_blueprint_build_cost(bp_ids: int | list[int]):
+    """
+    Returns the build cost of a blueprint/list of blueprints using the Evecookbook API
+
+    Args:
+        int | list[int]: Type IDs of the blueprints to calculate build costs for. Max 20 type IDs per request
+    
+    Returns:
+
+    """
+    if type(bp_ids) == int:
+        bp_ids = list(bp_ids)
+    
+    target = "https://evecookbook.com/api/buildCost"
+    params = {
+        "blueprintTypeId": ",".join(list(map(str, bp_ids))),
+        "quantity": 1,
+        "priceMode": "sell",
+        "additionalCosts": 0,
+        "baseMe": 0,
+        "componentsMe": 0,
+        "system": "Jita",
+        "facilityTax": 0,
+        "industryStructureType": "Station"
+    }
+    req = requests.get(target, params=params)
+    statcode, body = req.status_code, req.json()
+    return statcode, body
 
 
 def get_item_prices(typeIds: list[int] = [44992], regionId: int = 30000142) -> Tuple[int, list]:

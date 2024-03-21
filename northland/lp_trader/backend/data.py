@@ -31,6 +31,12 @@ def check_for_character_update():
             _ = update_character_db(token)
     return False
 
+def check_for_item_update():
+    item = Item.objects.all()[0]
+    if not item.was_recently_updated():
+        return True
+    return False
+
 def update_character_db(token: Token, force: bool = False) -> bool:
     """
     Updates a character's corrosponding database
@@ -142,6 +148,30 @@ def update_sde() -> bool:
     return True
 
 
+def update_sde_blueprints() -> bool:
+    """
+    Update the SDE for blueprints specifically using the Fuzzworks SDE library
+    Has to be done separately to update_sde as blueprints do not have a marketTypeID, and will be filtered out by the SDE data endpoint
+
+    Args:
+        None
+    
+    Returns:
+        bool
+    """
+    bp_static_data = get_blueprint_static_data()
+    print("Writing BP data to DB...")
+    for entry in tqdm(bp_static_data):
+        try:
+            blueprint = Blueprint.objects.filter(item_name=entry["typeID"])[0]
+            blueprint.input_materials[entry["materialTypeID"]] = entry["quantity"]
+            blueprint.save()
+        except Blueprint.DoesNotExist as dne:
+            new_blueprint = Blueprint(
+                item_id
+            )
+
+
 def update_sde_prices() -> bool:
     """
     Update the internal pricings for items using the get_item_prices endpoint.
@@ -163,6 +193,7 @@ def update_sde_prices() -> bool:
         for key, value in res.items():
             item = Item.objects.filter(item_id=key)[0]
             item.market_price = value
+            item.last_updated = timezone.now()
             item.save()
 
     return res
